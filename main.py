@@ -1,3 +1,5 @@
+from services.utils import get_main_menu_opt
+
 def creq_runner():
     state = "main_menu"
 
@@ -5,8 +7,7 @@ def creq_runner():
 
     while state != "exit":
         if state == "main_menu":
-            print("Main menu")
-            state = "main_menu"
+            state = get_main_menu_opt()
 
         elif state == "create_request":
             print("Creating request")
