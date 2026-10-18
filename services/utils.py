@@ -10,53 +10,68 @@ def get_main_menu_opt():
     }
 
     choice = input(
-        "\n======== CREQ ========\n"
-        "1. Create request\n"
-        "2. View request\n"
-        "3. Approve request\n"
-        "4. Issue card\n"
-        "5. Return card\n"
-        "6. List requests\n"
-        "7. Exit\n"
-        "____________________________\n"
-        "Select an option(1-7): "
-    )
+        "\n"
+        "╔══════════════════════════════════╗\n"
+        "║               CREQ               ║\n"
+        "║     Access Card Management       ║\n"
+        "╠══════════════════════════════════╣\n"
+        "║  1.  📝 Create Request           ║\n"
+        "║  2.  🔎 View Request             ║\n"
+        "║  3.  ✓  Approve Request          ║\n"
+        "║  4.  🎫 Issue Card               ║\n"
+        "║  5.  ↩  Return Card              ║\n"
+        "║  6.  📋 List Requests            ║\n"
+        "║  7.  🚪 Exit                     ║\n"
+        "╚══════════════════════════════════╝\n"
+        "  Select an option [1-7]: "
+    ).strip()
 
     if choice not in options:
-        print("\nInvalid selection. Try again\n")
+        print(
+            "\n  ⚠ Invalid menu selection."
+            "\n  Please enter a number between 1 and 7.\n"
+        )
         return "main_menu"
-    
+
     return options[choice]
 
-def generate_id(ids: list[str]):
+
+def generate_id(ids: list[str]) -> str:
     number = 1
+    request_id = f"A{number:03d}"
 
-    id = f"A{number:03d}"
-
-    while id in ids:
+    while request_id in ids:
         number += 1
-        id = f"A{number:03d}"
+        request_id = f"A{number:03d}"
 
-    return id
+    return request_id
+
 
 def get_card_type() -> str | None:
     options = {
         "1": "visitor",
         "2": "student",
-        "3": "staff"
+        "3": "staff",
     }
 
     choice = input(
-        "\n----- Select card type -----\n"
-        "1. Vistor\n"
-        "2. Student\n"
-        "3. Staff\n"
-        "______________________________\n"
-        "Select an option(1-3): "
-    )
+        "\n"
+        "╭──────────────────────────────────╮\n"
+        "│            CARD TYPE             │\n"
+        "├──────────────────────────────────┤\n"
+        "│  1.  👤 Visitor Card             │\n"
+        "│  2.  🎓 Student Card             │\n"
+        "│  3.  💼 Staff Card               │\n"
+        "╰──────────────────────────────────╯\n"
+        "  Select card type [1-3]: "
+    ).strip()
 
     if choice not in options:
-        print("\nInvalid card type selection\n")
-        return
-    
+        print(
+            "\n  ⚠ Invalid card type selection."
+            "\n  Choose Visitor (1), Student (2), or Staff (3)."
+            "\n  Please try again.\n"
+        )
+        return None
+
     return options[choice]

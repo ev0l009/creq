@@ -1,12 +1,12 @@
 from services.utils import generate_id, get_card_type
 
 from typing import TypedDict
-
 from pathlib import Path
 import json
 
-DB_DIR = Path(__file__).resolve().parent.parent/"data"
-DB_FILE_PATH = DB_DIR/"requests.json"
+DB_DIR = Path(__file__).resolve().parent.parent / "data"
+DB_FILE_PATH = DB_DIR / "requests.json"
+
 
 class TicketDict(TypedDict):
     id: str
@@ -15,30 +15,33 @@ class TicketDict(TypedDict):
     status: str
     approved_by: str
 
+
 class Creq:
     def __init__(self) -> None:
         self.requests: dict[str, TicketDict] = {}
 
     def create_request(self) -> str | None:
         print(
-            "\n----- Create Request -----\n"
+            "\n╔══════════════════════════════════╗\n"
+            "║         📝 CREATE REQUEST        ║\n"
+            "╚══════════════════════════════════╝"
         )
-        fellow_id = input("Fellow ID: ")
 
-        if not fellow_id.strip():
-            print("\nFellow ID cannot be empty\n")
+        fellow_id = input("  Fellow ID: ").strip()
+
+        if not fellow_id:
+            print("\n  ⚠ Fellow ID cannot be empty.\n")
             return
-        
+
         card_type = get_card_type()
 
         if not card_type:
             return
-        
-        ids: list[str] = [id for id in self.requests]
-        id = generate_id(ids)
 
-        self.requests[id] = {
-            "id": id,
+        request_id = generate_id(list(self.requests))
+
+        self.requests[request_id] = {
+            "id": request_id,
             "fellow_id": fellow_id,
             "card_type": card_type,
             "status": "requested",
@@ -46,170 +49,247 @@ class Creq:
         }
 
         print(
-            "\nRequest created successfully.\n"
-            f"Request ID: {id}\n"
+            "\n  ✓ REQUEST CREATED SUCCESSFULLY\n"
+            "  ──────────────────────────────\n"
+            f"  Request ID : {request_id}\n"
+            f"  Fellow ID  : {fellow_id}\n"
+            f"  Card Type  : {card_type.capitalize()}\n"
+            "  Status     : Requested\n"
         )
+
+        return request_id
 
     def view_request(self):
         if not self.requests:
-            print("\nThere are no requests yet.\n")
+            print("\n  ℹ No requests found. Create a request first.\n")
             return
-        
-        print(
-            "\n----- View Request -----\n"
-        )
-        
-        request_id = input("Request ID: ")
 
-        if not request_id.strip():
-            print("\nRequest ID cannot be empty.\n")
+        print(
+            "\n╔══════════════════════════════════╗\n"
+            "║          🔎 VIEW REQUEST         ║\n"
+            "╚══════════════════════════════════╝"
+        )
+
+        request_id = input("  Request ID: ").strip()
+
+        if not request_id:
+            print("\n  ⚠ Request ID cannot be empty.\n")
             return
 
         if request_id not in self.requests:
-            print("\nInvalid request ID.\n")
+            print(f"\n  ✗ No request found with ID '{request_id}'.\n")
             return
-        
+
         request = self.requests[request_id]
 
         print(
-            f"\nRequest Details\n"
-            "----------------------\n"
-            f"Request ID: {request['id']}\n"
-            f"Fellow ID: {request['fellow_id']}\n"
-            f"Card Type: {request['card_type'].capitalize()}\n"
-            f"Status: {request['status'].capitalize()}\n"
-            f"Approved by: {request['approved_by']}"
+            "\n╭────────── REQUEST DETAILS ───────╮\n"
+            f"  Request ID  : {request['id']}\n"
+            f"  Fellow ID   : {request['fellow_id']}\n"
+            f"  Card Type   : {request['card_type'].capitalize()}\n"
+            f"  Status      : {request['status'].capitalize()}\n"
+            f"  Approved By : {request['approved_by']}\n"
+            "╰─────────────────────────────────╯\n"
         )
 
     def approve_request(self):
         if not self.requests:
-            print("\nThere are no requests yet.\n")
+            print("\n  ℹ No requests available for approval.\n")
             return
 
         print(
-            "\n----- Approve Request -----\n"
+            "\n╔══════════════════════════════════╗\n"
+            "║        ✓ APPROVE REQUEST         ║\n"
+            "╚══════════════════════════════════╝"
         )
 
-        request_id = input("\nRequest ID: ")
+        request_id = input("  Request ID: ").strip()
 
-        if not request_id.strip():
-            print("\nRequest ID cannot be empty.\n")
+        if not request_id:
+            print("\n  ⚠ Request ID cannot be empty.\n")
             return
 
         if request_id not in self.requests:
-            print("\nInvalid request ID.\n")
+            print(f"\n  ✗ No request found with ID '{request_id}'.\n")
             return
-        
-        staff_id = input("\nStaff ID: ")
 
-        if not staff_id.strip():
-            print("\nRequest ID cannot be empty.\n")
+        staff_id = input("  Approving Staff ID: ").strip()
+
+        if not staff_id:
+            print("\n  ⚠ Staff ID cannot be empty.\n")
             return
-        
+
         request = self.requests[request_id]
 
         if request["status"] != "requested":
-            print(f"\nRequest {request_id} has already been approved by {request['approved_by']}.\n")
+            print(
+                f"\n  ⚠ Request '{request_id}' cannot be approved.\n"
+                f"  Current status: {request['status'].capitalize()}\n"
+                f"  Approved by: {request['approved_by']}\n"
+            )
             return
-        
+
         request["status"] = "approved"
         request["approved_by"] = staff_id
 
-        print(f"\nRequest [ID: {request_id}] approved by {staff_id}\n")
+        print(
+            "\n  ✓ REQUEST APPROVED\n"
+            "  ──────────────────────────────\n"
+            f"  Request ID : {request_id}\n"
+            f"  Approved By: {staff_id}\n"
+            "  Status     : Approved\n"
+        )
 
     def issue_card(self):
         if not self.requests:
-            print("\nThere are no requests yet.\n")
+            print("\n  ℹ No requests available for card issuance.\n")
             return
 
         print(
-            "\n----- Issue Card -----\n"
+            "\n╔══════════════════════════════════╗\n"
+            "║          🎫 ISSUE CARD           ║\n"
+            "╚══════════════════════════════════╝"
         )
 
-        request_id = input("\nRequest ID: ")
+        request_id = input("  Request ID: ").strip()
 
-        if not request_id.strip():
-            print("\nRequest ID cannot be empty.\n")
+        if not request_id:
+            print("\n  ⚠ Request ID cannot be empty.\n")
             return
 
         if request_id not in self.requests:
-            print("\nInvalid request ID.\n")
+            print(f"\n  ✗ No request found with ID '{request_id}'.\n")
             return
-        
+
         request = self.requests[request_id]
 
         if request["status"] != "approved":
-            print(f"\nRequest needs to be approved before cards can be issued.\n")
+            print(
+                "\n  ⚠ Card issuance denied.\n"
+                f"  Current status: {request['status'].capitalize()}\n"
+                "  The request must be approved before a card can be issued.\n"
+            )
             return
-        
+
         request["status"] = "issued"
 
-        print(f"\nCard issued successfully.\n")
+        print(
+            "\n  ✓ CARD ISSUED SUCCESSFULLY\n"
+            "  ──────────────────────────────\n"
+            f"  Request ID : {request_id}\n"
+            f"  Issued To  : {request['fellow_id']}\n"
+            f"  Card Type  : {request['card_type'].capitalize()}\n"
+            "  Status     : Issued\n"
+        )
 
     def return_card(self):
         if not self.requests:
-            print("\nThere are no requests yet.\n")
+            print("\n  ℹ No requests available for card return.\n")
             return
 
         print(
-            "\n----- Issue Card -----\n"
+            "\n╔══════════════════════════════════╗\n"
+            "║          ↩ RETURN CARD           ║\n"
+            "╚══════════════════════════════════╝"
         )
 
-        request_id = input("\nRequest ID: ")
+        request_id = input("  Request ID: ").strip()
 
-        if not request_id.strip():
-            print("\nRequest ID cannot be empty.\n")
+        if not request_id:
+            print("\n  ⚠ Request ID cannot be empty.\n")
             return
 
         if request_id not in self.requests:
-            print("\nInvalid request ID.\n")
+            print(f"\n  ✗ No request found with ID '{request_id}'.\n")
             return
-        
-        request = self.requests[request_id]   
+
+        request = self.requests[request_id]
 
         if request["status"] != "issued":
-            print(f"\nCards need to be issued before they can be returned.\n")
+            print(
+                "\n  ⚠ Card cannot be returned.\n"
+                f"  Current status: {request['status'].capitalize()}\n"
+                "  Only issued cards can be returned.\n"
+            )
             return
-        
+
         request["status"] = "returned"
 
-        print(f"\nCard successfully returned.\n")
-
-    def list_requests(self) -> str | None:
-        if not self.requests:
-            print("\nThere are no requests yet.\n")
-            return
-        
-        all_requests = (
-            "\n----- All Requests -----\n"
-            "ID   Card Type     Status     Approved by   Issued To\n"
+        print(
+            "\n  ✓ CARD RETURNED SUCCESSFULLY\n"
+            "  ──────────────────────────────\n"
+            f"  Request ID : {request_id}\n"
+            f"  Returned By: {request['fellow_id']}\n"
+            "  Status     : Returned\n"
         )
-        
+
+    def list_requests(self):
+        if not self.requests:
+            print("\n  ℹ No requests found. Nothing to display.\n")
+            return
+
+        print(
+            "\n╔══════════════════════════════════════════════════════════════╗\n"
+            "║                       📋 ALL REQUESTS                       ║\n"
+            "╚══════════════════════════════════════════════════════════════╝"
+        )
+
+        headers = (
+            f"{'ID':<8}"
+            f"{'Fellow ID':<16}"
+            f"{'Card Type':<12}"
+            f"{'Status':<14}"
+            f"{'Approved By':<14}"
+        )
+
+        print(f"\n  {headers}")
+        print("  " + "─" * len(headers))
+
         for request in self.requests.values():
-            all_requests += f"{request['id']}   {request['card_type']}    {request['status']}   {request['approved_by']}     {request['fellow_id']}\n"
+            print(
+                f"  {request['id']:<8}"
+                f"{request['fellow_id']:<16}"
+                f"{request['card_type'].capitalize():<12}"
+                f"{request['status'].capitalize():<14}"
+                f"{request['approved_by']:<14}"
+            )
 
-        print(all_requests)        
-
+        print(f"\n  Total requests: {len(self.requests)}\n")
 
     def load(self):
         DB_DIR.mkdir(parents=True, exist_ok=True)
 
         try:
-            with open(DB_FILE_PATH, "r") as file:
+            with open(DB_FILE_PATH, "r", encoding="utf-8") as file:
                 self.requests = json.load(file)
+
         except FileNotFoundError:
             print(
-                "\nNo requests database\n"
-                "Creating a new database\n"
+                "\n  ℹ No existing requests database found.\n"
+                "  A new database will be created when saved.\n"
             )
+
+        except json.JSONDecodeError:
+            print(
+                "\n  ✗ The requests database contains invalid JSON.\n"
+                "  Existing data could not be loaded.\n"
+            )
+
+        except OSError as error:
+            print(f"\n  ✗ Could not read the requests database: {error}\n")
+
         else:
-            print("\nRequests loaded.")
+            print(f"\n  ✓ Loaded {len(self.requests)} request(s).\n")
 
     def save(self):
+        DB_DIR.mkdir(parents=True, exist_ok=True)
+
         try:
-            with open(DB_FILE_PATH, "w") as file:
-                json.dump(self.requests, file,  indent=4)
-        except (FileNotFoundError, PermissionError):
-            print("\nCouldn't save your session\n")
+            with open(DB_FILE_PATH, "w", encoding="utf-8") as file:
+                json.dump(self.requests, file, indent=4)
+
+        except (OSError, TypeError) as error:
+            print(f"\n  ✗ Could not save requests: {error}\n")
+
         else:
-            print("\nSession saved\n")
+            print(f"\n  ✓ Saved {len(self.requests)} request(s).\n")

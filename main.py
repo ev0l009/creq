@@ -38,10 +38,18 @@ def creq_runner():
             state = "main_menu"
 
         else:
-            print("\nInvalid selection.Try again...\n")
+            print(
+                "\n  ⚠ Invalid menu selection."
+                "\n  Please choose a valid option from the menu.\n"
+            )
 
     creq.save()
 
-    print("Exiting...\n")
+    print(
+        "╔══════════════════════════════════╗\n"
+        "║          CREQ                    ║\n"
+        "║   👋 Exiting application...      ║\n"
+        "╚══════════════════════════════════╝\n"
+    )
 
 creq_runner()

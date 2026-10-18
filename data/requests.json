@@ -12,5 +12,12 @@
         "card_type": "visitor",
         "status": "requested",
         "approved_by": "None"
+    },
+    "A003": {
+        "id": "A003",
+        "fellow_id": "A674",
+        "card_type": "visitor",
+        "status": "returned",
+        "approved_by": "Z777"
     }
 }
