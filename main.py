@@ -34,7 +34,7 @@ def creq_runner():
             state = "main_menu"
 
         elif state == "list_request":
-            print("Listing requests")
+            creq.list_requests()
             state = "main_menu"
 
         else:

@@ -173,8 +173,23 @@ class Creq:
         
         request["status"] = "returned"
 
-        print(f"\nCard successfully returned.\n")     
-            
+        print(f"\nCard successfully returned.\n")
+
+    def list_requests(self) -> str | None:
+        if not self.requests:
+            print("\nThere are no requests yet.\n")
+            return
+        
+        all_requests = (
+            "\n----- All Requests -----\n"
+            "ID   Card Type     Status     Approved by   Issued To\n"
+        )
+        
+        for request in self.requests.values():
+            all_requests += f"{request['id']}   {request['card_type']}    {request['status']}   {request['approved_by']}     {request['fellow_id']}\n"
+
+        print(all_requests)        
+
 
     def load(self):
         DB_DIR.mkdir(parents=True, exist_ok=True)
