@@ -31,7 +31,32 @@ def get_main_menu_opt():
 def generate_id(ids: list[str]):
     number = 1
 
-    while f"A{number:.03d}" in ids:
-        number += 1
+    id = f"A{number:03d}"
 
-    return "A{number:.03d}"
+    while id in ids:
+        number += 1
+        id = f"A{number:03d}"
+
+    return id
+
+def get_card_type() -> str | None:
+    options = {
+        "1": "visitor",
+        "2": "student",
+        "3": "staff"
+    }
+
+    choice = input(
+        "\n----- Select card type -----\n"
+        "1. Vistor\n"
+        "2. Student\n"
+        "3. Staff\n"
+        "______________________________\n"
+        "Select an option(1-3): "
+    )
+
+    if choice not in options:
+        print("\nInvalid card type selection\n")
+        return
+    
+    return options[choice]

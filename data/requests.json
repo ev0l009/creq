@@ -1,0 +1,16 @@
+{
+    "A001": {
+        "id": "A001",
+        "fellow_id": "S001",
+        "card_type": "student",
+        "status": "issued",
+        "approved_by": "Valerian"
+    },
+    "A002": {
+        "id": "A002",
+        "fellow_id": "S234",
+        "card_type": "visitor",
+        "status": "requested",
+        "approved_by": "None"
+    }
+}

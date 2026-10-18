@@ -1,32 +1,36 @@
 from services.utils import get_main_menu_opt
 
+from services.creq import Creq
+
+creq = Creq()
+
 def creq_runner():
     state = "main_menu"
 
-    print("\nLoading data...\n")
+    creq.load()
 
     while state != "exit":
         if state == "main_menu":
             state = get_main_menu_opt()
 
         elif state == "create_request":
-            print("Creating request")
+            creq.create_request()
             state = "main_menu"
 
         elif state == "view_request":
-            print("Viewing request")
+            creq.view_request()
             state = "main_menu"
 
         elif state == "approve_request":
-            print("Approving request")
+            creq.approve_request()
             state = "main_menu"
 
         elif state == "issue_card":
-            print("Issuing card")
+            creq.issue_card()
             state = "main_menu"
 
         elif state == "return_card":
-            print("Returning card")
+            creq.return_card()
             state = "main_menu"
 
         elif state == "list_request":
@@ -36,8 +40,8 @@ def creq_runner():
         else:
             print("\nInvalid selection.Try again...\n")
 
-    print("\nSaving session\n")
+    creq.save()
 
-    print("\nExiting...\n")
+    print("Exiting...\n")
 
 creq_runner()
